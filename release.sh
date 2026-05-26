@@ -18,8 +18,8 @@ jq --arg v "$VERSION" '.version = $v' \
   custom_components/aionflux/manifest.json > /tmp/manifest_tmp.json
 mv /tmp/manifest_tmp.json custom_components/aionflux/manifest.json
 
-# Commit and tag
-git add custom_components/aionflux/manifest.json
+# Commit all changes + manifest
+git add custom_components/
 git diff --cached --quiet || git commit -m "chore: release v$VERSION"
 git tag "v$VERSION"
 
