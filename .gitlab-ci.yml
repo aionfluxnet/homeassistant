@@ -26,8 +26,18 @@ release:
       echo "Publishing release v$VERSION to GitHub"
 
     - |
+      # Verify token identity
+      GH_USER=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/user | jq -r '.login')
+      echo "GitHub token belongs to: $GH_USER"
+      # Check repo access
+      REPO_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+        -H "Authorization: Bearer $GITHUB_TOKEN" \
+        https://api.github.com/repos/aionfluxnet/homeassistant)
+      echo "Repo API status: $REPO_STATUS"
+
+    - |
       # Push full repo to GitHub (mirror)
-      GITHUB_REMOTE="https://aionfluxnet:${GITHUB_TOKEN}@github.com/aionfluxnet/homeassistant.git"
+      GITHUB_REMOTE="https://${GITHUB_TOKEN}@github.com/aionfluxnet/homeassistant.git"
       git remote add github "$GITHUB_REMOTE" 2>/dev/null || \
         git remote set-url github "$GITHUB_REMOTE"
       git push github HEAD:main --force
