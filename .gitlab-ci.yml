@@ -1,5 +1,6 @@
 stages:
   - release
+  - cleanup
 
 # Workflow:
 #   1. Locally run: bash release.sh 1.2.0
@@ -69,3 +70,33 @@ release:
         echo "GitHub release failed (HTTP $HTTP_CODE)"
         exit 1
       fi
+
+cleanup-old-releases:
+  stage: cleanup
+  image: alpine:latest
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: manual
+  before_script:
+    - apk add --no-cache curl jq
+  script:
+    - |
+      KEEP="${KEEP_TAG:-v1.1.0}"
+      echo "Deleting all GitHub releases except: $KEEP"
+      RELEASES=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
+        "https://api.github.com/repos/aionfluxnet/homeassistant/releases?per_page=100")
+      echo "$RELEASES" | jq -r '.[] | "\(.id) \(.tag_name)"' | while read ID TAG; do
+        if [ "$TAG" != "$KEEP" ]; then
+          echo "Deleting release $TAG (id=$ID)..."
+          curl -s -X DELETE \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            "https://api.github.com/repos/aionfluxnet/homeassistant/releases/$ID"
+          echo "Deleting tag $TAG from GitHub..."
+          curl -s -X DELETE \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            "https://api.github.com/repos/aionfluxnet/homeassistant/git/refs/tags/$TAG"
+          echo "Done: $TAG"
+        else
+          echo "Keeping: $TAG"
+        fi
+      done
