@@ -6,7 +6,9 @@
   "issue_tracker": "https://github.com/aionfluxnet/homeassistant/issues",
   "requirements": [],
   "dependencies": [],
-  "codeowners": ["@aionfluxnet"],
+  "codeowners": [
+    "@aionfluxnet"
+  ],
   "iot_class": "cloud_polling",
   "config_flow": true
 }
