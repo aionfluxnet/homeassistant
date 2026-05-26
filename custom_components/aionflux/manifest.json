@@ -1,7 +1,7 @@
 {
   "domain": "aionflux",
   "name": "AionFlux",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "documentation": "https://github.com/aionfluxnet/homeassistant",
   "issue_tracker": "https://github.com/aionfluxnet/homeassistant/issues",
   "requirements": [],
