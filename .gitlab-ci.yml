@@ -1,15 +1,21 @@
 stages:
   - release
 
-# Manually triggered — run with: CI → Pipelines → Run pipeline
-# Required variable: VERSION (e.g. "1.2.0")
-# Required CI variable (Settings → CI/CD → Variables): GITHUB_TOKEN (GitHub PAT with repo scope)
+# Trigger: push a tag like v1.2.0  →  pipeline runs automatically
+#          OR: CI → Pipelines → Run pipeline with VERSION variable (manual)
+# Required CI variable (Settings → CI/CD → Variables): GITHUB_TOKEN (GitHub PAT, repo scope)
 
 release:
   stage: release
   image: alpine:latest
   rules:
-    - when: manual
+    # Auto-trigger on version tags (v1.0.0, v1.2.3, ...)
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/'
+      variables:
+        VERSION: "$CI_COMMIT_TAG"
+    # Manual trigger with VERSION variable set
+    - if: '$VERSION != ""'
+      when: manual
   variables:
     VERSION: ""
   before_script:
@@ -23,6 +29,8 @@ release:
         echo "ERROR: VERSION variable is required (e.g. 1.2.0)"
         exit 1
       fi
+      # Strip leading 'v' if present (e.g. v1.0.0 -> 1.0.0)
+      VERSION="${VERSION#v}"
       echo "Releasing version $VERSION"
 
     - |
