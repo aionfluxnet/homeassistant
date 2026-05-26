@@ -1,0 +1,22 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Połącz z AionFlux",
+        "description": "Podaj URL API AionFlux i klucz API. Wygeneruj klucz w AionFlux → Ustawienia → Integracje.",
+        "data": {
+          "api_url": "URL API",
+          "api_key": "Klucz API",
+          "scan_interval": "Interwał odświeżania (sekundy, 10–300)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nie można połączyć się z API AionFlux. Sprawdź URL.",
+      "invalid_auth": "Nieprawidłowy klucz API."
+    },
+    "abort": {
+      "already_configured": "AionFlux jest już skonfigurowany dla tego URL API."
+    }
+  }
+}

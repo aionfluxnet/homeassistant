@@ -1,0 +1,8 @@
+{
+  "name": "AionFlux",
+  "domain": "aionflux",
+  "documentation": "https://github.com/aionfluxnet/homeassistant",
+  "bugtracker": "https://github.com/aionfluxnet/homeassistant/issues",
+  "homeassistant": "2024.1.0",
+  "iot_class": "cloud_polling"
+}
