@@ -13,7 +13,9 @@
     },
     "error": {
       "cannot_connect": "Nie można połączyć się z API AionFlux. Sprawdź URL.",
-      "invalid_auth": "Nieprawidłowy klucz API."
+      "invalid_auth": "Nieprawidłowy klucz API.",
+      "ssl_error": "Błąd SSL. Upewnij się, że URL API zaczyna się od https://",
+      "timeout": "Przekroczono czas połączenia. Sprawdź URL API i sieć."
     },
     "abort": {
       "already_configured": "AionFlux jest już skonfigurowany dla tego URL API."

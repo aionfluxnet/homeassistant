@@ -1,9 +1,12 @@
+import logging
 import aiohttp
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import DEFAULT_API_URL, DEFAULT_SCAN_INTERVAL, DOMAIN
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class AionFluxConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -15,16 +18,17 @@ class AionFluxConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             api_url = user_input["api_url"].rstrip("/")
             api_key = user_input["api_key"].strip()
-            session = async_get_clientsession(self.hass)
             try:
+                session = async_get_clientsession(self.hass)
                 async with session.get(
                     f"{api_url}/api/integrations/ha/devices",
                     headers={"Authorization": f"Bearer {api_key}"},
-                    timeout=aiohttp.ClientTimeout(total=10),
+                    timeout=aiohttp.ClientTimeout(total=15),
                 ) as response:
                     if response.status == 401:
                         errors["api_key"] = "invalid_auth"
                     elif response.status != 200:
+                        _LOGGER.error("AionFlux API returned HTTP %s", response.status)
                         errors["base"] = "cannot_connect"
                     else:
                         await self.async_set_unique_id(api_url)
@@ -37,7 +41,8 @@ class AionFluxConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                                 "scan_interval": user_input.get("scan_interval", DEFAULT_SCAN_INTERVAL),
                             },
                         )
-            except aiohttp.ClientError:
+            except Exception as err:
+                _LOGGER.error("AionFlux config flow error [%s]: %s", type(err).__name__, err, exc_info=True)
                 errors["base"] = "cannot_connect"
 
         return self.async_show_form(

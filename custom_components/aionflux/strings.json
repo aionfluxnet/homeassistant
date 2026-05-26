@@ -13,7 +13,9 @@
     },
     "error": {
       "cannot_connect": "Failed to connect to the AionFlux API. Check the URL.",
-      "invalid_auth": "Invalid API key."
+      "invalid_auth": "Invalid API key.",
+      "ssl_error": "SSL error. Make sure the API URL starts with https://",
+      "timeout": "Connection timed out. Check the API URL and your network."
     },
     "abort": {
       "already_configured": "AionFlux is already configured for this API URL."
